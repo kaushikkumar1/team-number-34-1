@@ -1,6 +1,12 @@
+################################################
+
 ### [Click On The Link To view the Application](https://hostelmanagement-devjam.herokuapp.com/)
 
+################################################
+
 ### HOSTEL MANAGEMENT WEB APPLICATION
+
+### THIS REPO CONTAINS BACKEND OF THE HOSTEL MANAGEMENT APPLICATION
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
