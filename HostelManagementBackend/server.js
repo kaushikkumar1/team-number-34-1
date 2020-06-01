@@ -3,8 +3,8 @@ const app = express();
 const mongoose =require('mongoose');
 const dotenv=require('dotenv');
 const authRoute =require("./backend/routes/auth");
-// const postRoute= require("./backend/routers/posts");
-// const getRoute= require("./backend/routers/receive");
+const postRoute= require("./backend/routes/posts");
+const getRoute= require("./backend/routes/receive");
 const roomRoute= require("./backend/routes/room");
 
 //dotenv for the .env file
@@ -29,10 +29,10 @@ app.use((req, res, next) => {
  app.use('/api/user',authRoute);
 
 // //import posts middleware
-// app.use('/api/posts',postRoute);
+ app.use('/api/posts',postRoute);
 
 // //import receive middleware
-// app.use('/api/receive',getRoute);
+ app.use('/api/receive',getRoute);
 
 // middleware for choosing the room
  app.use('/api/room',roomRoute);

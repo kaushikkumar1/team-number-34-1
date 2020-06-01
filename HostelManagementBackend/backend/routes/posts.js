@@ -1,7 +1,7 @@
 const router= require('express').Router();
 const verify= require('../verifytoken');
-const User= require('../modles/User');
-const Block= require('../modles/Student');
+const User= require('../models/User');
+const Block= require('../models/Student');
 
 //TO GET THE DETAIL OF THE USER FROM THE TOKEN THROUGH VERIFY
 router.get('/',verify, async(req,res)=>{

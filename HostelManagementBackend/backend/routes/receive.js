@@ -1,7 +1,7 @@
 const router= require('express').Router();
 const verify= require('../verifytoken');
-const User= require('../modles/User');
-const Block= require('../modles/Student');
+const User= require('../models/User');
+const Block= require('../models/Student');
 const paginatedFun=require('../pagination');
 
 // ALL STUDENT LIST OF A BLOCK
