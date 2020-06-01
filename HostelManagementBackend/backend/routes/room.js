@@ -151,55 +151,55 @@ router.get('/detail/:blockName/:email', verify , async (req , res)=>{
 })
 
 //TO SEND THE LIST OF THE ROOM WHICH IS FILLED ,PARTIALY FILLED AND EMPTY
-router.get('/choose', verify , async (req,res)=> {
-    try{
+// router.get('/choose', verify , async (req,res)=> {
+//     try{
 
-    // check wether the block exist or not.
-    const block =await Block.findOne({blockName:req.body.blockName,ownerMail:req.user.email});
-    if(!block) return res.status(400).send({mes:"Block do not exist"});
+//     // check wether the block exist or not.
+//     const block =await Block.findOne({blockName:req.body.blockName,ownerMail:req.user.email});
+//     if(!block) return res.status(400).send({mes:"Block do not exist"});
 
-    var roomList=[];
+//     var roomList=[];
 
-    // room Object has three properties noOfstudent,sameClg & roomNo
-    var room=new Object();
-    const stu=block.student;
+//     // room Object has three properties noOfstudent,sameClg & roomNo
+//     var room=new Object();
+//     const stu=block.student;
 
-    //sort the student array based on the room number
-    await stu.sort((a,b)=> a.room-b.room);
-    const len=stu.length;
+//     //sort the student array based on the room number
+//     await stu.sort((a,b)=> a.room-b.room);
+//     const len=stu.length;
 
-    if(len<1) return res.status(200).send({error:"no student found on the block"});
-    else {
-        room.noOfstudent=1;
-        if(stu[0].college==req.body.college) room.sameClg=1;
-        else room.sameClg=0;
-        room.roomNo=stu[0].room;
-    }
+//     if(len<1) return res.status(200).send({error:"no student found on the block"});
+//     else {
+//         room.noOfstudent=1;
+//         if(stu[0].college==req.body.college) room.sameClg=1;
+//         else room.sameClg=0;
+//         room.roomNo=stu[0].room;
+//     }
 
-    for(var i=1 ; i<len ; i++) {
-        if(stu[i].room==room.roomNo) {
-            room.noOfstudent+=1;
-            if(stu[i].college==req.body.college) room.sameClg+=1;
-         }
-        else {  
-            if(room.noOfstudent<5 && room.sameClg!=0) roomList.push(room);
-            room={};
-            room.noOfstudent=1;
-            if(stu[i].college==req.body.college) room.sameClg=1;
-            else room.sameClg=0;
-            room.roomNo=stu[i].room;
-        }
-    }
-    if(room.noOfstudent<5 && room.sameClg!=0) roomList.push(room);
+//     for(var i=1 ; i<len ; i++) {
+//         if(stu[i].room==room.roomNo) {
+//             room.noOfstudent+=1;
+//             if(stu[i].college==req.body.college) room.sameClg+=1;
+//          }
+//         else {  
+//             if(room.noOfstudent<5 && room.sameClg!=0) roomList.push(room);
+//             room={};
+//             room.noOfstudent=1;
+//             if(stu[i].college==req.body.college) room.sameClg=1;
+//             else room.sameClg=0;
+//             room.roomNo=stu[i].room;
+//         }
+//     }
+//     if(room.noOfstudent<5 && room.sameClg!=0) roomList.push(room);
    
-    if(roomList.length>0) res.status(200).send(roomList);
-    else return res.status(400).send({msg:"no room with same college name found"});
+//     if(roomList.length>0) res.status(200).send(roomList);
+//     else return res.status(400).send({msg:"no room with same college name found"});
 
-    }catch(err){
-       return res.status(400).send({error:err});
-    }
+//     }catch(err){
+//        return res.status(400).send({error:err});
+//     }
     
-})
+// })
 
 
 //GET THE PARTICULAR ROOM DETAILS ON BLOCK
