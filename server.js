@@ -6,6 +6,7 @@ const authRoute =require("./backend/routes/auth");
 const postRoute= require("./backend/routes/posts");
 const getRoute= require("./backend/routes/receive");
 const roomRoute= require("./backend/routes/room");
+const chartsRoute=require("./backend/routes/charts");
 
 //dotenv for the .env file
 dotenv.config();
@@ -37,6 +38,8 @@ app.use((req, res, next) => {
 // middleware for choosing the room
  app.use('/api/room',roomRoute);
 
+//middleware for the charts 
+app.use('/api/charts',chartsRoute);
 
 mongoose.connect(process.env.DB_CONNECT,{useNewUrlParser: true,useUnifiedTopology: true},
 ()=> console.log("connected to db"));
