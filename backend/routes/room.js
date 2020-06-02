@@ -151,11 +151,11 @@ router.get('/detail/:blockName/:email', verify , async (req , res)=>{
 })
 
 //TO SEND THE LIST OF THE ROOM WHICH IS FILLED ,PARTIALY FILLED AND EMPTY
-router.get('/choose', verify , async (req,res)=> {
+router.get('/choose/:blockName', verify , async (req,res)=> {
     try{
 
     // check wether the block exist or not.
-    const block =await Block.findOne({blockName:req.body.blockName,ownerMail:req.user.email});
+    const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
     if(!block) return res.status(400).send({mes:"Block do not exist"});
 
     var roomList={};
