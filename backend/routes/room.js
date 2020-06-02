@@ -244,7 +244,48 @@ router.get('/choose/floor/:blockName/:floor', verify , async (req,res)=> {
     
 })
 
+//GET STUDENT DEATAILS OF THE FLOOR
+router.get('/deail/floor/:blockName/:floor', verify , async(req,res)=>{
+    try{
+    
+        // check wether the block exist or not.
+        const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
+        if(!block) return res.status(401).send({mes:"Block do not exist"});
 
+        const stu=block.student;
+        const len=stu.length;
+        var   result=[];
+
+        for(var i=0;i<len;i++){
+            if(stu[i].floor==req.params.floor) result.push(stu[i]);
+        }
+        res.status(200).send(result);
+    }catch(err){
+        return res.status(500).send({error:err});
+    }
+
+})
+
+router.get('/deail/floor/room/:blockName/:floor/:room', verify , async(req,res)=>{
+    try{
+    
+        // check wether the block exist or not.
+        const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
+        if(!block) return res.status(401).send({mes:"Block do not exist"});
+
+        const stu=block.student;
+        const len=stu.length;
+        var   result=[];
+
+        for(var i=0;i<len;i++){
+            if(stu[i].floor==req.params.floor && stu[i].room==req.params.room) result.push(stu[i]);
+        }
+        res.status(200).send(result);
+    }catch(err){
+        return res.status(500).send({error:err});
+    }
+
+})
 
 //GET THE PARTICULAR ROOM DETAILS ON BLOCK
 //router.get('/block/detail',)
