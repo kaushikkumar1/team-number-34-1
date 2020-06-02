@@ -166,8 +166,8 @@ router.get('/choose/:blockName', verify , async (req,res)=> {
     //sort the student array based on the room number
     await stu.sort((a,b)=> a.room-b.room);
     const len=stu.length;
-
-    if(len<1) return res.status(200).send({error:"no student found on the block"});
+    //to check student is there or not
+    // if(len<1) return res.status(200).send({error:"no student found on the block"});
    
 
     for(var i=0 ; i<len ; i++) {
@@ -203,6 +203,47 @@ router.get('/choose/:blockName', verify , async (req,res)=> {
     }
     
 })
+
+//TO SEND THE LIST OF THE ROOM WHICH IS FILLED ,PARTIALY FILLED AND EMPTY
+router.get('/choose/floor/:blockName/:floor', verify , async (req,res)=> {
+    try{
+
+    // check wether the block exist or not.
+    const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
+    if(!block) return res.status(400).send({mes:"Block do not exist"});
+
+    var roomList={};
+    roomList.roominfloor=block.numberOfRoomInFloor;
+    roomList.bedinroom=block.numberOfStudentInRoom;
+
+    // room Object has three properties noOfstudent,sameClg & roomNo
+    const stu=block.student;
+
+    //sort the student array based on the room number
+    await stu.sort((a,b)=> a.room-b.room);
+    const len=stu.length;
+    //to check student is there or not
+    // if(len<1) return res.status(200).send({error:"no student found on the block"});
+
+    for(var i=0 ; i<len ; i++) {
+       if(roomList[stu[i].room]==null && stu[i].floor==req.params.floor) roomList[stu[i].room]=1;
+       else if(stu[i].floor==req.params.floor) roomList[stu[i].room]+=1;
+    }
+    var f=parseInt(req.params.floor);
+    for(var i=f*100+1;i<f*100+block.numberOfRoomInFloor;i++)
+    {
+        if(roomList[i]==null) roomList[i]=0;
+    }
+  
+    if(roomList) res.status(200).send(roomList);
+    else return res.status(400).send({msg:"no room found"});
+
+    }catch(err){
+       return res.status(400).send({error:err});
+    }
+    
+})
+
 
 
 //GET THE PARTICULAR ROOM DETAILS ON BLOCK
