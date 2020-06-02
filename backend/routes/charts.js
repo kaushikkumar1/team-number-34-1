@@ -112,6 +112,10 @@ router.get('/block/chart/:blockName',verify,async (req,res)=>{
            if(roomList[stu[i].room]==null) roomList[stu[i].room]=1;
            else roomList[stu[i].room]+=1;
         }
+        var finalResult={};
+        finalResult.empty=0;
+        finalResult.full=0;
+        finalResult.partial=0;
         
         var result=[];
         var floor={}
@@ -126,14 +130,14 @@ router.get('/block/chart/:blockName',verify,async (req,res)=>{
           floor.floorno=i;
     
             for( j=i*100+1;j<=i*100+block.numberOfRoomInFloor;j++){
-                if(roomList[j]==null) floor.emptyroom+=1,floor.emptyroomD.push(j);
-                else if(roomList[j]<block.numberOfStudentInRoom) floor.partialyfilledroom+=1,floor.partialyfilledroomD.push(j);
-                else floor.fullroom+=1,floor.fullroomD.push(j);
+                if(roomList[j]==null) floor.emptyroom+=1,floor.emptyroomD.push(j),finalResult.empty+=1;
+                else if(roomList[j]<block.numberOfStudentInRoom) floor.partialyfilledroom+=1,floor.partialyfilledroomD.push(j),finalResult.partial+=1;
+                else floor.fullroom+=1,floor.fullroomD.push(j), finalResult.full+=1;
             }
             result.push(floor);
             floor={};
         }
-        if(roomList) res.status(200).send(result);
+        if(roomList) res.status(200).send(finalResult);
         else return res.status(400).send({msg:"no room found"});
     
         }catch(err){
@@ -142,7 +146,6 @@ router.get('/block/chart/:blockName',verify,async (req,res)=>{
         
 
 })
-
 
 
 //GET ALL STUDENT OF THE BLOCK
@@ -157,7 +160,7 @@ router.get('/all/student/:blockName',verify,async(req,res)=>{
     
         //sort the student array based on the room number
         await stu.sort((a,b)=> a.room-b.room);
-        
+
         res.status(200).send(stu);
     }catch(err){
         return res.status(500).send({error:err});
