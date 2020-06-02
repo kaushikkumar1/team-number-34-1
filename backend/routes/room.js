@@ -207,7 +207,7 @@ router.get('/choose/:blockName', verify , async (req,res)=> {
 //TO SEND THE LIST OF THE ROOM WHICH IS FILLED ,PARTIALY FILLED AND EMPTY
 router.get('/choose/floor/:blockName/:floor', verify , async (req,res)=> {
     try{
-
+    
     // check wether the block exist or not.
     const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
     if(!block) return res.status(400).send({mes:"Block do not exist"});
@@ -234,8 +234,20 @@ router.get('/choose/floor/:blockName/:floor', verify , async (req,res)=> {
     {
         if(roomList[i]==null) roomList[i]=0;
     }
+    var resu=[];
+    var ans={};
+    for(var i=f*100+1;i<f*100+block.numberOfRoomInFloor;i++)
+    {
+        ans.room=i;
+        ans.student=roomList[i];
+        ans.empty=block.numberOfStudentInRoom-roomList[i];
+        
+        resu.push(ans);
+        ans={};
+    }
+
   
-    if(roomList) res.status(200).send(roomList);
+    if(roomList) res.status(200).send(resu);
     else return res.status(400).send({msg:"no room found"});
 
     }catch(err){
@@ -266,6 +278,7 @@ router.get('/deail/floor/:blockName/:floor', verify , async(req,res)=>{
 
 })
 
+// GET ROOM DETAILS
 router.get('/deail/floor/room/:blockName/:floor/:room', verify , async(req,res)=>{
     try{
     
