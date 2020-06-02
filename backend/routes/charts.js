@@ -91,42 +91,79 @@ router.get('/college/name/detail/:blockName/:college',verify,async(req,res)=>{
 //CHART FOR THE BLOCK
 router.get('/block/chart/:blockName',verify,async (req,res)=>{
     try{
+
         // check wether the block exist or not.
         const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
         if(!block) return res.status(400).send({mes:"Block do not exist"});
-
+    
         var roomList={};
-        roomList.roominfloor=block.numberOfRoomInFloor;
-        roomList.bedinroom=block.numberOfStudentInRoom;
-
+    
         // room Object has three properties noOfstudent,sameClg & roomNo
         const stu=block.student;
-
+    
         //sort the student array based on the room number
         await stu.sort((a,b)=> a.room-b.room);
         const len=stu.length;
         //to check student is there or not
         // if(len<1) return res.status(200).send({error:"no student found on the block"});
-
-        for(var i=0 ; i<len ; i++) {
-        if(roomList[stu[i].room]==null && stu[i].floor==req.params.floor) roomList[stu[i].room]=1;
-        else if(stu[i].floor==req.params.floor) roomList[stu[i].room]+=1;
-        }
-        var f=parseInt(req.params.floor);
-        for(var i=f*100+1;i<f*100+block.numberOfRoomInFloor;i++)
-        {
-            if(roomList[i]==null) roomList[i]=0;
-        }
+       
     
-        if(roomList) res.status(200).send(roomList);
+        for(var i=0 ; i<len ; i++) {
+           if(roomList[stu[i].room]==null) roomList[stu[i].room]=1;
+           else roomList[stu[i].room]+=1;
+        }
+        
+        var result=[];
+        var floor={}
+        var i,j;
+        for(i=0 ; i<block.numberOfFloor ; i++){
+          floor.emptyroom=0;
+          floor.emptyroomD=[];
+          floor.fullroom=0;
+          floor.fullroomD=[];
+          floor.partialyfilledroom=0;
+          floor.partialyfilledroomD=[];
+          floor.floorno=i;
+    
+            for( j=i*100+1;j<=i*100+block.numberOfRoomInFloor;j++){
+                if(roomList[j]==null) floor.emptyroom+=1,floor.emptyroomD.push(j);
+                else if(roomList[j]<block.numberOfStudentInRoom) floor.partialyfilledroom+=1,floor.partialyfilledroomD.push(j);
+                else floor.fullroom+=1,floor.fullroomD.push(j);
+            }
+            result.push(floor);
+            floor={};
+        }
+        if(roomList) res.status(200).send(result);
         else return res.status(400).send({msg:"no room found"});
-
-    }catch(err){
-       return res.status(400).send({error:err});
-    }
+    
+        }catch(err){
+           return res.status(400).send({error:err});
+        }
+        
 
 })
 
+
+
+//GET ALL STUDENT OF THE BLOCK
+router.get('/all/student/:blockName',verify,async(req,res)=>{
+    try{
+
+        // check wether the block exist or not.
+        const block =await Block.findOne({blockName:req.params.blockName,ownerMail:req.user.email});
+        if(!block) return res.status(400).send({mes:"Block do not exist"});
+    
+        var stu=block.student;
+    
+        //sort the student array based on the room number
+        await stu.sort((a,b)=> a.room-b.room);
+        
+        res.status(200).send(stu);
+    }catch(err){
+        return res.status(500).send({error:err});
+    }
+
+})
 
 
 module.exports =router;
